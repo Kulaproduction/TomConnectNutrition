@@ -211,7 +211,7 @@ select{
 
 .stats-wrap{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
+  grid-template-columns:1fr 1fr;
   gap:10px;
   margin-bottom:14px;
 }
@@ -234,14 +234,15 @@ select{
 }
 
 .stat-value{
-  font-size:23px;
+  font-size:24px;
   font-weight:900;
   color:var(--mint-dark);
-  line-height:1;
-  height:28px;
+  line-height:1.1;
+  min-height:30px;
   display:flex;
   align-items:center;
   justify-content:center;
+  text-align:center;
   font-variant-numeric: tabular-nums;
 }
 
@@ -441,7 +442,7 @@ select{
 
   <div class="stats-wrap">
     <div class="stat-card">
-      <div class="stat-label">Activity Score</div>
+      <div class="stat-label">Activity</div>
       <div id="pal" class="stat-value"></div>
     </div>
     <div class="stat-card">
