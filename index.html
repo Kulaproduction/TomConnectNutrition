@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TomConnect Nutrition Speedboat MVP</title>
+
+<style>
+:root{
+  --mint:#40c98f;
+  --mint-dark:#1db06f;
+  --blue:#79d8f5;
+  --red:#ff6b6b;
+  --yellow:#f5b942;
+  --green:#40c98f;
+  --bg:#f4fbf8;
+  --text:#20352d;
+  --muted:#7e9388;
+  --line:#dcebe4;
+  --white:#ffffff;
+  --shadow:0 18px 40px rgba(64,160,124,.12);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:
+    radial-gradient(circle at left 20%, rgba(121,216,245,.22), transparent 28%),
+    radial-gradient(circle at right 55%, rgba(64,201,143,.18), transparent 24%),
+    linear-gradient(180deg,#f7fcfa 0%, #eef7f3 100%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  color:var(--text);
+}
+
+.app{
+  width:460px;
+  max-width:100%;
+  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,251,249,.96));
+  border-radius:34px;
+  box-shadow:var(--shadow);
+  padding:22px;
+  overflow:hidden;
+}
+
+.brand-row{
+  display:flex;
+  justify-content:center;
+  margin-bottom:14px;
+}
+
+.brand-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 14px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #ebf3ef;
+  font-size:12px;
+  font-weight:900;
+  color:var(--muted);
+}
+
+.brand-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--mint));
+}
+
+.hero{text-align:center;margin-bottom:18px}
+
+.hero h1{
+  margin:0 0 8px;
+  font-size:28px;
+  line-height:1.08;
+  font-weight:900;
+  letter-spacing:-.03em;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.55;
+}
+
+.card{
+  border-radius:26px;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(220,235,228,.95);
+  box-shadow:0 12px 30px rgba(64,160,124,.06);
+  padding:14px;
+  margin-bottom:14px;
+}
+
+.label-top{
+  font-size:11px;
+  font-weight:900;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:8px;
+}
+
+select{
+  width:100%;
+  padding:15px 16px;
+  border:none;
+  outline:none;
+  border-radius:18px;
+  background:linear-gradient(180deg,#f8fcfa,#f2f8f5);
+  font-size:14px;
+  font-weight:800;
+  color:var(--text);
+  box-shadow:inset 0 0 0 1px #e2eee8;
+}
+
+.profile{
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+
+.avatar{
+  width:68px;
+  height:68px;
+  border-radius:24px;
+  background:linear-gradient(135deg,var(--blue),var(--mint));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:24px;
+  font-weight:900;
+  flex:0 0 auto;
+}
+
+.name{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-.02em;
+  margin-bottom:4px;
+}
+
+.meta{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
+.goals{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
+.goal{
+  border:none;
+  border-radius:20px;
+  padding:14px 10px;
+  background:linear-gradient(180deg,#f8fcfa,#f1f7f4);
+  color:var(--text);
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:inset 0 0 0 1px #e0ede7;
+}
+
+.goal.active{
+  background:linear-gradient(135deg,var(--blue),var(--mint));
+  color:#fff;
+  box-shadow:0 14px 28px rgba(64,201,143,.22);
+}
+
+.calories{
+  padding:22px;
+  text-align:center;
+  background:linear-gradient(135deg,#7fdcf6 0%, #43cb93 100%);
+  color:#fff;
+  border:none;
+}
+
+.calories .k1{
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.95;
+  margin-bottom:8px;
+}
+
+.calories .value{
+  font-size:60px;
+  line-height:.95;
+  font-weight:900;
+  letter-spacing:-.05em;
+}
+
+.calories .k2{
+  font-size:14px;
+  opacity:.95;
+  margin-top:8px;
+}
+
+.stats-wrap{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.stat-card{
+  border-radius:22px;
+  padding:15px;
+  background:#fff;
+  border:1px solid rgba(220,235,228,.95);
+  text-align:center;
+}
+
+.stat-label{
+  font-size:11px;
+  font-weight:900;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:6px;
+}
+
+.stat-value{
+  font-size:23px;
+  font-weight:900;
+  color:var(--mint-dark);
+}
+
+.risk{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.risk-badge{
+  padding:10px 14px;
+  border-radius:999px;
+  color:#fff;
+  font-size:13px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.risk-badge.green{background:var(--green)}
+.risk-badge.yellow{background:var(--yellow)}
+.risk-badge.red{background:var(--red)}
+
+.risk-title{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+
+.risk-copy{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.45;
+}
+
+.macros{
+  display:grid;
+  gap:10px;
+}
+
+.macro{
+  border-radius:22px;
+  padding:15px 16px;
+  background:linear-gradient(180deg,#fbfefd,#f5faf7);
+  box-shadow:inset 0 0 0 1px #e3efe9;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.m-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.m-icon{
+  width:46px;
+  height:46px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#eefbf6,#dff7ed);
+  font-size:22px;
+}
+
+.m-name{
+  font-size:17px;
+  font-weight:900;
+}
+
+.m-sub{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:2px;
+}
+
+.m-value{
+  font-size:22px;
+  font-weight:900;
+  color:var(--mint-dark);
+  white-space:nowrap;
+}
+
+.ai-box{
+  background:linear-gradient(180deg,#ffffff,#f4fbf8);
+}
+
+.ai-text{
+  font-size:14px;
+  line-height:1.55;
+  color:var(--text);
+  font-weight:650;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.btn{
+  border:none;
+  border-radius:20px;
+  padding:15px;
+  font-size:14px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--blue),var(--mint));
+  color:#fff;
+}
+
+.btn-secondary{
+  background:#fff;
+  color:var(--mint-dark);
+  box-shadow:inset 0 0 0 1px #dcebe4;
+}
+
+.history{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.toast{
+  display:none;
+  text-align:center;
+  margin-top:10px;
+  padding:12px;
+  border-radius:18px;
+  background:#e9fff5;
+  color:var(--mint-dark);
+  font-size:13px;
+  font-weight:900;
+}
+
+@media(max-width:430px){
+  body{padding:0}
+  .app{min-height:100vh;border-radius:0;padding:18px}
+  .hero h1{font-size:26px}
+  .calories .value{font-size:54px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="brand-row">
+    <div class="brand-pill">
+      <span class="brand-dot"></span>
+      TomConnect Nutrition Speedboat
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1>Coach Decision Panel</h1>
+    <p>AI-first nutrition prototype for fast client planning, risk detection and coach action.</p>
+  </div>
+
+  <div class="card">
+    <div class="label-top">Client List</div>
+    <select id="client"></select>
+  </div>
+
+  <div class="card profile">
+    <div class="avatar" id="avatar"></div>
+    <div>
+      <div class="name" id="name"></div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label-top">Goal Selection</div>
+    <div class="goals">
+      <button class="goal" data-goal="CUT">Lose Weight</button>
+      <button class="goal active" data-goal="MAINTAIN">Maintain</button>
+      <button class="goal" data-goal="GAIN">Gain Mass</button>
+    </div>
+  </div>
+
+  <div class="card calories">
+    <div class="k1">Daily Calories</div>
+    <div class="value" id="kcal"></div>
+    <div class="k2">kcal / day</div>
+  </div>
+
+  <div class="stats-wrap">
+    <div class="stat-card">
+      <div class="stat-label">PAL</div>
+      <div id="pal" class="stat-value"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">BMR</div>
+      <div id="bmr" class="stat-value"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TDEE</div>
+      <div id="tdee" class="stat-value"></div>
+    </div>
+  </div>
+
+  <div class="card risk">
+    <div>
+      <div class="label-top">Client Risk</div>
+      <div class="risk-title" id="riskTitle"></div>
+      <div class="risk-copy" id="riskCopy"></div>
+    </div>
+    <div class="risk-badge" id="riskBadge"></div>
+  </div>
+
+  <div class="card macros">
+    <div class="macro">
+      <div class="m-left">
+        <div class="m-icon">🥚</div>
+        <div>
+          <div class="m-name">Protein</div>
+          <div class="m-sub">2.0 g / kg body weight</div>
+        </div>
+      </div>
+      <div class="m-value" id="prot"></div>
+    </div>
+
+    <div class="macro">
+      <div class="m-left">
+        <div class="m-icon">🥑</div>
+        <div>
+          <div class="m-name">Fat</div>
+          <div class="m-sub">25% of calories, minimum 40 g</div>
+        </div>
+      </div>
+      <div class="m-value" id="fat"></div>
+    </div>
+
+    <div class="macro">
+      <div class="m-left">
+        <div class="m-icon">🍚</div>
+        <div>
+          <div class="m-name">Carbs</div>
+          <div class="m-sub">Remaining calories</div>
+        </div>
+      </div>
+      <div class="m-value" id="carb"></div>
+    </div>
+  </div>
+
+  <div class="card ai-box">
+    <div class="label-top">AI Coach Summary</div>
+    <div class="ai-text" id="aiSummary"></div>
+  </div>
+
+  <div class="card">
+    <div class="label-top">Prototype Actions</div>
+    <div class="actions">
+      <button class="btn btn-primary" id="savePlan">Save Plan</button>
+      <button class="btn btn-secondary" id="copyPlan">Copy Summary</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <div class="card">
+    <div class="label-top">Last Saved Plan</div>
+    <div class="history" id="history">No saved plan yet.</div>
+  </div>
+
+</div>
+
+<script>
+const USERS = [
+{first:"Thomas",last:"Stämpfli",w:92,h:186,age:65,sessions:457,avg:"4.14",
+note:"Exceptionally active club member. Registered for 773 days and completed 457 training sessions, averaging 4.14 sessions per week."},
+{first:"Jakub",last:"Cebrzyna",w:106,h:195,age:38,sessions:273,avg:"2.56"},
+{first:"Krystian",last:"Kula",w:90,h:185,age:37,sessions:207,avg:"3.52"},
+{first:"Asia",last:"Dyrdek",w:54,h:160,age:41,sessions:21,avg:"0.39"},
+{first:"Karolina",last:"Mrozek",w:70,h:163,age:40,sessions:27,avg:"1.99"},
+{first:"Hanna",last:"Tsikhanchuk",w:68,h:173,age:26,sessions:16,avg:"1.96"},
+{first:"Bartosz",last:"Zarębski",w:60,h:173,age:19,sessions:9,avg:"1.91"},
+{first:"Łukasz",last:"Sadowski",w:91,h:178,age:38,sessions:17,avg:"1.89"},
+{first:"Kasia",last:"Budzyn",w:67,h:164,age:48,sessions:2,avg:"1.75"},
+{first:"Marzena",last:"Krzeczek",w:75,h:170,age:49,sessions:2,avg:"1.75"},
+{first:"Iwona",last:"Lisiak",w:82,h:160,age:39,sessions:14,avg:"1.72"},
+{first:"Aleksandra",last:"Sadowska",w:68,h:175,age:32,sessions:10,avg:"1.71"},
+{first:"Marcelo",last:"Santos",w:82,h:175,age:39,sessions:15,avg:"1.69"},
+{first:"Joanna",last:"Tatarczuch-Pawlik",w:73,h:173,age:44,sessions:38,avg:"1.65"},
+{first:"Anita",last:"Pociecha-Piaskowy",w:59,h:164,age:44,sessions:24,avg:"1.63"},
+{first:"Magdalena",last:"Środulska",w:69,h:176,age:35,sessions:7,avg:"1.58"},
+{first:"Ela",last:"Czyż",w:78,h:160,age:42,sessions:31,avg:"1.57"},
+{first:"Robert",last:"Adamski",w:75,h:192,age:30,sessions:12,avg:"1.56"},
+{first:"Izabela",last:"Tarbaj",w:47,h:158,age:22,sessions:3,avg:"1.40"},
+{first:"Michał",last:"Bereziński",w:81,h:182,age:42,sessions:29,avg:"1.35"},
+{first:"Anita",last:"Pasternak",w:52,h:159,age:29,sessions:29,avg:"1.31"},
+{first:"Magdalena",last:"OSOBA",w:66,h:158,age:68,sessions:32,avg:"1.27"},
+{first:"Aneta",last:"Kołodziej",w:99,h:167,age:27,sessions:14,avg:"1.17"},
+{first:"Kasia",last:"Maj",w:50,h:164,age:39,sessions:23,avg:"1.07"},
+{first:"Maciej",last:"Nastal",w:84,h:185,age:29,sessions:21,avg:"0.94"},
+{first:"Slawek",last:"Razny",w:80,h:178,age:57,sessions:63,avg:"0.92"},
+{first:"Katarzyna",last:"Piekarz",w:83,h:176,age:40,sessions:23,avg:"0.88"},
+{first:"Aneta",last:"Lewandowska-Mentel",w:72,h:170,age:47,sessions:15,avg:"0.57"},
+{first:"Aneta",last:"Fijałkowska",w:78,h:168,age:43,sessions:5,avg:"0.51"},
+{first:"Teresa",last:"Krok",w:58,h:163,age:66,sessions:2,avg:"0.27"}
+];
+
+let currentGoal = "MAINTAIN";
+let currentUser = USERS[0];
+let latestPlan = null;
+
+const select = document.getElementById("client");
+const nameEl = document.getElementById("name");
+const metaEl = document.getElementById("meta");
+const avatarEl = document.getElementById("avatar");
+const kcalEl = document.getElementById("kcal");
+const palEl = document.getElementById("pal");
+const bmrEl = document.getElementById("bmr");
+const tdeeEl = document.getElementById("tdee");
+const protEl = document.getElementById("prot");
+const fatEl = document.getElementById("fat");
+const carbEl = document.getElementById("carb");
+const riskTitleEl = document.getElementById("riskTitle");
+const riskCopyEl = document.getElementById("riskCopy");
+const riskBadgeEl = document.getElementById("riskBadge");
+const aiSummaryEl = document.getElementById("aiSummary");
+const historyEl = document.getElementById("history");
+const toastEl = document.getElementById("toast");
+
+USERS.forEach((u, i) => {
+  const option = document.createElement("option");
+  option.value = i;
+  option.textContent = `${u.first} ${u.last}`;
+  select.appendChild(option);
+});
+
+function initials(first, last){
+  return `${first[0] || ""}${last[0] || ""}`.toUpperCase();
+}
+
+function pal(avg){
+  avg = parseFloat(avg);
+  if(avg < 0.5) return 1.2;
+  if(avg < 1.5) return 1.375;
+  if(avg < 2.5) return 1.55;
+  if(avg < 4) return 1.725;
+  return 1.9;
+}
+
+function bmr(weight, height, age){
+  return Math.round(10 * weight + 6.25 * height - 5 * age + 5);
+}
+
+function clientRisk(user){
+  const avg = parseFloat(user.avg);
+
+  if(avg < 0.7){
+    return {
+      color:"red",
+      label:"High Risk",
+      title:"Immediate coach follow-up needed",
+      recommendation:"Client activity is very low. Trainer should contact the client, clarify obstacles and offer a simple 7-day nutrition and training plan."
+    };
+  }
+
+  if(avg < 1.5){
+    return {
+      color:"yellow",
+      label:"Medium Risk",
+      title:"Client needs structured follow-up",
+      recommendation:"Client is moderately active but not stable enough. Trainer should schedule a check-in and confirm the current goal."
+    };
+  }
+
+  return {
+    color:"green",
+    label:"On Track",
+    title:"Client is active and ready for plan execution",
+    recommendation:"Client shows good activity. Maintain the current plan, monitor adherence and review progress in the next check-in."
+  };
+}
+
+function goalText(goal){
+  if(goal === "CUT") return "weight loss";
+  if(goal === "GAIN") return "muscle gain";
+  return "maintenance";
+}
+
+function buildSummary(user, kcal, protein, fat, carbs, risk){
+  return `${user.first} ${user.last} has been assigned a ${goalText(currentGoal)} plan at ${kcal} kcal per day. ` +
+  `Recommended macros: ${protein} g protein, ${fat} g fat and ${carbs} g carbs. ` +
+  `Client status: ${risk.label}. Coach action: ${risk.recommendation}`;
+}
+
+function showToast(message){
+  toastEl.textContent = message;
+  toastEl.style.display = "block";
+  setTimeout(() => {
+    toastEl.style.display = "none";
+  }, 2200);
+}
+
+function updateHistory(){
+  const saved = localStorage.getItem("tomconnectNutritionLastPlan");
+
+  if(!saved){
+    historyEl.textContent = "No saved plan yet.";
+    return;
+  }
+
+  const plan = JSON.parse(saved);
+
+  historyEl.innerHTML =
+    `<strong>${plan.client}</strong><br>` +
+    `Goal: ${plan.goal}<br>` +
+    `Calories: ${plan.kcal} kcal<br>` +
+    `Macros: ${plan.protein} protein, ${plan.fat} fat, ${plan.carbs} carbs<br>` +
+    `Risk: ${plan.risk}<br>` +
+    `Saved: ${new Date(plan.date).toLocaleString()}`;
+}
+
+function calc(){
+  const p = pal(currentUser.avg);
+  const B = bmr(currentUser.w, currentUser.h, currentUser.age);
+  const T = Math.round(B * p);
+
+  let kcal = T;
+  if(currentGoal === "CUT") kcal = T - 400;
+  if(currentGoal === "GAIN") kcal = T + 300;
+
+  const protein = Math.round(currentUser.w * 2);
+  const fat = Math.max(40, Math.round((kcal * 0.25) / 9));
+  const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
+  const risk = clientRisk(currentUser);
+  const summary = buildSummary(currentUser, kcal, protein, fat, carbs, risk);
+
+  nameEl.textContent = `${currentUser.first} ${currentUser.last}`;
+  metaEl.textContent = `${currentUser.age} years • ${currentUser.h} cm • ${currentUser.w} kg • ${currentUser.sessions} sessions • ${currentUser.avg} avg/week`;
+  avatarEl.textContent = initials(currentUser.first, currentUser.last);
+
+  kcalEl.textContent = kcal;
+  palEl.textContent = p.toFixed(3);
+  bmrEl.textContent = B;
+  tdeeEl.textContent = T;
+  protEl.textContent = `${protein} g`;
+  fatEl.textContent = `${fat} g`;
+  carbEl.textContent = `${carbs} g`;
+
+  riskTitleEl.textContent = risk.title;
+  riskCopyEl.textContent = risk.recommendation;
+  riskBadgeEl.textContent = risk.label;
+  riskBadgeEl.className = `risk-badge ${risk.color}`;
+
+  aiSummaryEl.textContent = summary;
+
+  latestPlan = {
+    client:`${currentUser.first} ${currentUser.last}`,
+    goal:currentGoal,
+    kcal,
+    protein:`${protein} g`,
+    fat:`${fat} g`,
+    carbs:`${carbs} g`,
+    risk:risk.label,
+    summary,
+    date:new Date().toISOString()
+  };
+}
+
+select.addEventListener("change", e => {
+  currentUser = USERS[Number(e.target.value)];
+  calc();
+});
+
+document.querySelectorAll(".goal").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".goal").forEach(x => x.classList.remove("active"));
+    button.classList.add("active");
+    currentGoal = button.dataset.goal;
+    calc();
+  });
+});
+
+document.getElementById("savePlan").addEventListener("click", () => {
+  localStorage.setItem("tomconnectNutritionLastPlan", JSON.stringify(latestPlan));
+  updateHistory();
+  showToast("Plan saved to TomConnect prototype.");
+});
+
+document.getElementById("copyPlan").addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(latestPlan.summary);
+    showToast("AI Coach Summary copied.");
+  }catch(error){
+    showToast("Copy unavailable in this browser.");
+  }
+});
+
+calc();
+updateHistory();
+</script>
+</body>
+</html>
