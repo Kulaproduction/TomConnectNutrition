@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TomConnect Nutrition Speedboat MVP</title>
+<title>TomConnect Nutrition MVP</title>
 
 <style>
 :root{
@@ -392,13 +392,13 @@ select{
   <div class="brand-row">
     <div class="brand-pill">
       <span class="brand-dot"></span>
-      TomConnect Nutrition Speedboat
+      TomConnect Nutrition
     </div>
   </div>
 
   <div class="hero">
     <h1>My Nutrition Plan</h1>
-    <p>AI-first nutrition prototype for fast client planning, risk detection and coach action.</p>
+    <p>Your AI personalized daily calories, macros and progress guidance.</p>
   </div>
 
   <div class="card">
@@ -424,10 +424,14 @@ select{
   </div>
 
   <div class="card calories">
-    <div class="k1">Daily Calories</div>
-    <div class="value" id="kcal"></div>
-    <div class="k2">kcal / day</div>
+  <div class="k1">Daily Calories</div>
+  <div class="value" id="kcal"></div>
+  <div class="k2">kcal / day</div>
+
+  <div style="margin-top:10px; font-weight:900; font-size:16px;">
+    You're on track to reach your goal.
   </div>
+</div>
 
   <div class="stats-wrap">
     <div class="stat-card">
@@ -446,7 +450,7 @@ select{
 
   <div class="card risk">
     <div>
-      <div class="label-top">Client Risk</div>
+      <div class="label-top">Your Progress</div>
       <div class="risk-title" id="riskTitle"></div>
       <div class="risk-copy" id="riskCopy"></div>
     </div>
@@ -489,23 +493,18 @@ select{
   </div>
 
   <div class="card ai-box">
-    <div class="label-top">AI Coach Summary</div>
+    <div class="label-top">Your AI Daily Guidance</div>
     <div class="ai-text" id="aiSummary"></div>
+    <div style="margin-top:10px; font-weight:800; color:#1db06f;">
+Expected result: improved consistency, better nutrition control and visible progress within 30 days.
+</div>
   </div>
 
   <div class="card">
-    <div class="label-top">Prototype Actions</div>
-    <div class="actions">
-      <button class="btn btn-primary" id="savePlan">Save Plan</button>
-      <button class="btn btn-secondary" id="copyPlan">Copy Summary</button>
-    </div>
-    <div class="toast" id="toast"></div>
-  </div>
+  <div class="label-top">Next Step</div>
+  <button class="btn btn-primary">Start My Plan</button>
+</div>
 
-  <div class="card">
-    <div class="label-top">Last Saved Plan</div>
-    <div class="history" id="history">No saved plan yet.</div>
-  </div>
 
 </div>
 
@@ -546,7 +545,6 @@ note:"Exceptionally active club member. Registered for 773 days and completed 45
 
 let currentGoal = "MAINTAIN";
 let currentUser = USERS[0];
-let latestPlan = null;
 
 const select = document.getElementById("client");
 const nameEl = document.getElementById("name");
@@ -563,8 +561,6 @@ const riskTitleEl = document.getElementById("riskTitle");
 const riskCopyEl = document.getElementById("riskCopy");
 const riskBadgeEl = document.getElementById("riskBadge");
 const aiSummaryEl = document.getElementById("aiSummary");
-const historyEl = document.getElementById("history");
-const toastEl = document.getElementById("toast");
 
 USERS.forEach((u, i) => {
   const option = document.createElement("option");
@@ -596,26 +592,26 @@ function clientRisk(user){
   if(avg < 0.7){
     return {
       color:"red",
-      label:"High Risk",
-      title:"Immediate coach follow-up needed",
-      recommendation:"Client activity is very low. Trainer should contact the client, clarify obstacles and offer a simple 7-day nutrition and training plan."
+      label:"Needs Attention",
+      title:"Let's get back on track",
+      recommendation:"Your activity is low. Try to complete at least 2 workouts this week."
     };
   }
 
   if(avg < 1.5){
     return {
       color:"yellow",
-      label:"Medium Risk",
-      title:"Client needs structured follow-up",
-      recommendation:"Client is moderately active but not stable enough. Trainer should schedule a check-in and confirm the current goal."
+      label:"Keep Going",
+      title:"You're making progress",
+      recommendation:"Stay consistent and keep your current training rhythm."
     };
   }
 
   return {
     color:"green",
-    label:"On Track",
-    title:"Client is active and ready for plan execution",
-    recommendation:"Client shows good activity. Maintain the current plan, monitor adherence and review progress in the next check-in."
+    label:"You're Doing Great",
+    title:"Excellent progress",
+    recommendation:"Maintain your current routine and keep pushing forward."
   };
 }
 
@@ -626,37 +622,14 @@ function goalText(goal){
 }
 
 function buildSummary(user, kcal, protein, fat, carbs, risk){
-  return `${user.first} ${user.last} has been assigned a ${goalText(currentGoal)} plan at ${kcal} kcal per day. ` +
-  `Recommended macros: ${protein} g protein, ${fat} g fat and ${carbs} g carbs. ` +
-  `Client status: ${risk.label}. Coach action: ${risk.recommendation}`;
+  const note = user.note ? ` ${user.note}` : "";
+
+  return `${user.first}, your ${goalText(currentGoal)} plan is ${kcal} kcal per day. ` +
+  `Your daily targets are ${protein} g protein, ${fat} g fat and ${carbs} g carbs. ` +
+  `Progress status: ${risk.label}. ${risk.recommendation}` +
+  note;
 }
 
-function showToast(message){
-  toastEl.textContent = message;
-  toastEl.style.display = "block";
-  setTimeout(() => {
-    toastEl.style.display = "none";
-  }, 2200);
-}
-
-function updateHistory(){
-  const saved = localStorage.getItem("tomconnectNutritionLastPlan");
-
-  if(!saved){
-    historyEl.textContent = "No saved plan yet.";
-    return;
-  }
-
-  const plan = JSON.parse(saved);
-
-  historyEl.innerHTML =
-    `<strong>${plan.client}</strong><br>` +
-    `Goal: ${plan.goal}<br>` +
-    `Calories: ${plan.kcal} kcal<br>` +
-    `Macros: ${plan.protein} protein, ${plan.fat} fat, ${plan.carbs} carbs<br>` +
-    `Risk: ${plan.risk}<br>` +
-    `Saved: ${new Date(plan.date).toLocaleString()}`;
-}
 
 function calc(){
   const p = pal(currentUser.avg);
@@ -692,19 +665,6 @@ function calc(){
 
   aiSummaryEl.textContent = summary;
 
-  latestPlan = {
-    client:`${currentUser.first} ${currentUser.last}`,
-    goal:currentGoal,
-    kcal,
-    protein:`${protein} g`,
-    fat:`${fat} g`,
-    carbs:`${carbs} g`,
-    risk:risk.label,
-    summary,
-    date:new Date().toISOString()
-  };
-}
-
 select.addEventListener("change", e => {
   currentUser = USERS[Number(e.target.value)];
   calc();
@@ -719,23 +679,8 @@ document.querySelectorAll(".goal").forEach(button => {
   });
 });
 
-document.getElementById("savePlan").addEventListener("click", () => {
-  localStorage.setItem("tomconnectNutritionLastPlan", JSON.stringify(latestPlan));
-  updateHistory();
-  showToast("Plan saved to TomConnect prototype.");
-});
-
-document.getElementById("copyPlan").addEventListener("click", async () => {
-  try{
-    await navigator.clipboard.writeText(latestPlan.summary);
-    showToast("AI Coach Summary copied.");
-  }catch(error){
-    showToast("Copy unavailable in this browser.");
-  }
-});
 
 calc();
-updateHistory();
 </script>
 </body>
 </html>
